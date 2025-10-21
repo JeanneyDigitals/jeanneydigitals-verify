@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receipt Verification - JeanneyDigitals</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f9fafc;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 2rem;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      color: #0077cc;
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .verified {
+      background-color: #ff7b00;
+      color: white;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .details {
+      text-align: left;
+      background: #f3f7fa;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .details p {
+      margin: 0.25rem 0;
+    }
+
+    footer {
+      font-size: 0.85rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://via.placeholder.com/80" alt="JeanneyDigitals Logo" class="logo" />
+    <h1>Receipt Verified</h1>
+    <span class="verified">✅ Verified by JeanneyDigitals</span>
+
+    <div class="details">
+      <p><strong>Receipt ID:</strong> <span id="receipt-id">Loading...</span></p>
+    </div>
+
+    <p>Thank you for your purchase! Your receipt has been successfully verified.</p>
+
+    <footer>
+      &copy; 2025 JeanneyDigitals. All rights reserved.
+    </footer>
+  </div>
+
+  <script>
+    // Detect receipt number from URL
+    const url = window.location.href;
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id') || url.split('/').pop() || 'Unknown';
+    document.getElementById('receipt-id').textContent = id;
+  </script>
+</body>
+</html>
