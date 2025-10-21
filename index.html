@@ -86,8 +86,11 @@
   </div>
 
   <script>
-    // Try to detect receipt number
+    // Detect receipt number from URL
     const url = window.location.href;
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id') || url.split('/').pop() || 'Unknown';
-    do
+    document.getElementById('receipt-id').textContent = id;
+  </script>
+</body>
+</html>
