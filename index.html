@@ -1,109 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receipt Verification - JeanneyDigitals</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JeanneyDigitals Receipt Verification</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      background: #f9fafc;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #ff8c00, #007bff);
       color: #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      text-align: center;
+      padding: 40px;
     }
     .container {
       background: white;
-      border-radius: 16px;
+      max-width: 500px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 2rem;
-      text-align: center;
-      max-width: 480px;
-      width: 90%;
     }
     .logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 1rem;
+      width: 120px;
+      height: auto;
+      margin-bottom: 20px;
     }
-    h1 { color: #0077cc; margin-bottom: 0.5rem; }
-    .verified, .notfound {
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      font-weight: 600;
-      display: inline-block;
-      margin-bottom: 1rem;
+    h1 {
+      color: #007bff;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
     }
-    .verified { background-color: #ff7b00; color: white; }
-    .notfound { background-color: #d32f2f; color: white; }
-    .details {
+    .verified {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .error {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .data-item {
       text-align: left;
-      background: #f3f7fa;
-      padding: 1rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
+      margin: 8px 0;
+      font-size: 1rem;
     }
-    .details p { margin: 0.25rem 0; }
-    footer { font-size: 0.85rem; color: #555; }
+    .data-item span {
+      font-weight: bold;
+      color: #007bff;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <img src="logo.png" alt="JeanneyDigitals Logo" class="logo" />
-    <h1 id="status-title">Checking...</h1>
-    <div id="status-badge" class="verified" style="display:none;">✅ Verified</div>
-    <div id="error-badge" class="notfound" style="display:none;">❌ Not Found</div>
-
-    <div id="details" class="details" style="display:none;">
-      <p><strong>Receipt ID:</strong> <span id="receipt-id"></span></p>
-      <p><strong>Date:</strong> <span id="receipt-date"></span></p>
-      <p><strong>Amount:</strong> ₱<span id="receipt-amount"></span></p>
-      <p><strong>Amount in Words:</strong> <span id="receipt-words"></span></p>
-      <p><strong>Client Name:</strong> <span id="receipt-client"></span></p>
-      <p><strong>Payment Transaction:</strong> <span id="receipt-transaction"></span></p>
-    </div>
-
-    <p id="message">Verifying your receipt...</p>
-    <footer>&copy; 2025 JeanneyDigitals. All rights reserved.</footer>
+    <h1>JeanneyDigitals Receipt Verification</h1>
+    <div id="result">Loading...</div>
+    <div class="footer">© 2025 JeanneyDigitals | Verified Receipts</div>
   </div>
 
   <script>
+    const SHEET_URL = "https://opensheet.elk.sh/10fnuJ5yyL1jmsc7cvv2HfIbuYnz_PWj_hJbCgtD80-w/for%20verification";
+
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id') || window.location.href.split('/').pop();
-    const SHEET_URL = "https://opensheet.elk.sh/10fnuJ5yyL1jmsc7cvv2HfIbuYnz_PWj_hJbCgtD80-w/for%20verification"; // Replace with your actual Google Sheet ID
+    const receiptId = params.get("id");
 
-    document.getElementById("receipt-id").textContent = id;
+    async function verifyReceipt() {
+      if (!receiptId) {
+        document.getElementById("result").innerHTML = "<p class='error'>No receipt ID provided.</p>";
+        return;
+      }
+      try {
+        const res = await fetch(SHEET_URL);
+        const data = await res.json();
+        const match = data.find(r => r["Receipt ID"] === receiptId);
 
-    fetch(SHEET_URL)
-      .then(res => res.json())
-      .then(data => {
-        const match = data.find(row => row["Receipt ID"] === id);
         if (match) {
-          document.getElementById("status-title").textContent = "Receipt Verified";
-          document.getElementById("status-badge").style.display = "inline-block";
-          document.getElementById("details").style.display = "block";
-          document.getElementById("receipt-date").textContent = match["Date"] || "N/A";
-          document.getElementById("receipt-amount").textContent = match["Amount"] || "0.00";
-          document.getElementById("receipt-words").textContent = match["Amount in words"] || "—";
-          document.getElementById("receipt-client").textContent = match["Client Name"] || "—";
-          document.getElementById("receipt-transaction").textContent = match["Payment Transaction"] || "—";
-          document.getElementById("message").textContent = "Thank you for your payment!";
+          document.getElementById("result").innerHTML = `
+            <p class='verified'>✅ Verified Receipt</p>
+            <div class='data-item'><span>Receipt ID:</span> ${match["Receipt ID"]}</div>
+            <div class='data-item'><span>Date:</span> ${match["Date"]}</div>
+            <div class='data-item'><span>Amount:</span> ${match["Amount"]}</div>
+            <div class='data-item'><span>Amount in words:</span> ${match["Amount in words"]}</div>
+            <div class='data-item'><span>Client Name:</span> ${match["Client Name"]}</div>
+            <div class='data-item'><span>Payment Transaction:</span> ${match["Payment Transaction"]}</div>
+          `;
         } else {
-          document.getElementById("status-title").textContent = "Receipt Not Found";
-          document.getElementById("error-badge").style.display = "inline-block";
-          document.getElementById("message").textContent = "This receipt could not be verified.";
+          document.getElementById("result").innerHTML = "<p class='error'>❌ Invalid or unverified receipt.</p>";
         }
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("status-title").textContent = "Error connecting to verification server.";
-        document.getElementById("message").textContent = "Please try again later.";
-      });
+      } catch (err) {
+        document.getElementById("result").innerHTML = "<p class='error'>Error verifying receipt.</p>";
+      }
+    }
+
+    verifyReceipt();
   </script>
 </body>
 </html>
