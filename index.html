@@ -62,9 +62,11 @@
 
     <div id="details" class="details" style="display:none;">
       <p><strong>Receipt ID:</strong> <span id="receipt-id"></span></p>
-      <p><strong>Date:</strong> <span id="receipt-date"></span></p>
-      <p><strong>Total:</strong> $<span id="receipt-total"></span></p>
-      <p><strong>Customer:</strong> <span id="receipt-customer"></span></p>
+      <p><strong>Client Name:</strong> <span id="client Name"></span></p>
+      <p><strong>Date:</strong> <span id="date"></span></p>
+      <p><strong>Amount:</strong> $<span id="amount"></span></p>
+        <p><strong>Amount in words:</strong> $<span id="amount in words"></span></p>
+      <p><strong>Payment Transaction:</strong> <span id="payment transaction"></span></p>
     </div>
 
     <p id="message">Verifying your receipt...</p>
@@ -86,9 +88,11 @@
           document.getElementById("status-title").textContent = "Receipt Verified";
           document.getElementById("status-badge").style.display = "inline-block";
           document.getElementById("details").style.display = "block";
-          document.getElementById("receipt-date").textContent = match["Date"] || "N/A";
-          document.getElementById("receipt-total").textContent = match["Total"] || "0.00";
-          document.getElementById("receipt-customer").textContent = match["Customer"] || "—";
+          document.getElementById("client-name").textContent = match["Client Name"] || "—";
+          document.getElementById("date").textContent = match["Date"] || "MM-DD-YYYY";
+          document.getElementById("amount").textContent = match["Amount"] || "00000.00";
+          document.getElementById("amount-in-words").textContent = match["Amount in words"] || "—";
+          document.getElementById("payment-transaction").textContent = match["Payment Transaction"] || "—";
           document.getElementById("message").textContent = "Thank you for your purchase!";
         } else {
           document.getElementById("status-title").textContent = "Receipt Not Found";
